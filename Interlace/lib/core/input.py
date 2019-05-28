@@ -62,11 +62,16 @@ class InputHelper(object):
     @staticmethod
     def _replace_variable_for_commands(commands, variable, replacements):
         tmp_commands = set()
-
         for replacement in replacements:
             for command in commands:
-                tmp_commands.add(str(command).replace(variable, str(replacement)))
-
+                if variable == "_target_" and "_output_" in command:
+                    command = str(command).replace(variable, str(replacement))
+                    command = command.split("_output_/")
+                    command[1] = str(command[1]).replace("/", "_")
+                    tmp_commands.add("_output_/".join(command))
+                else:
+                    tmp_commands.add(str(command).replace(variable, str(replacement)))
+        
         return tmp_commands
 
 
